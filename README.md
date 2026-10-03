@@ -42,6 +42,7 @@ Copie `.env.example` como `.env` y configure `GOOGLE_SHEET_CSV_URL` con la URL C
 ## Despliegue
 
 El proyecto incluye `Dockerfile` y `compose.production.yaml` para ejecutarse detrás de Traefik en `api.cystems.ec`.
+En el VPS de CYSTEMS, `.env` debe conservar `CYSTEMS_PROXY_NETWORK=edkudkydmldnkvfswxizh8fw`.
 
 ```bash
 docker compose -f compose.production.yaml up -d --build
