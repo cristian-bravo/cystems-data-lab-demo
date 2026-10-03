@@ -3,19 +3,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const origin = Astro.url.origin;
 const endpoints = [
   { path: '/api/v1/ventas.json', description: 'Detalle transaccional de ventas. Acepta anio, region, canal, cliente y limit.' },
+  { path: '/api/v1/productos.json', description: 'Catálogo de productos. producto_id es la clave primaria para relacionarlo con Ventas.' },
   { path: '/api/v1/resumen.json', description: 'Indicadores, tendencia mensual y rankings ya calculados.' },
   { path: '/api/v1/schema.json', description: 'Diccionario de campos y tipos de datos.' },
   { path: '/api/v1/health.json', description: 'Estado del servicio y de su fuente de datos.' },
 ];
 const endpoint = `${origin}/api/v1/ventas.json`;
+const productEndpoint = `${origin}/api/v1/productos.json`;
 const powerQuery = `let
     Origen = Json.Document(Web.Contents("${endpoint}")),
     Registros = Origen[data],
     Tabla = Table.FromRecords(Registros),
     Tipos = Table.TransformColumnTypes(Tabla,{
-        {"fecha", type date}, {"anio", Int64.Type},
-        {"unidades", Int64.Type}, {"venta_neta", Currency.Type},
+        {"producto_id", type text}, {"fecha", type date}, {"anio", Int64.Type},
+        {"cantidad", Int64.Type}, {"venta_neta", Currency.Type},
         {"costo_total", Currency.Type}, {"margen", Currency.Type}
+    })
+in
+    Tipos`;
+const powerQueryProducts = `let
+    Origen = Json.Document(Web.Contents("${productEndpoint}")),
+    Registros = Origen[data],
+    Tabla = Table.FromRecords(Registros),
+    Tipos = Table.TransformColumnTypes(Tabla,{
+        {"producto_id", type text}, {"producto", type text},
+        {"categoria", type text}, {"precio_referencia", Currency.Type},
+        {"costo_unitario_referencia", Currency.Type}
     })
 in
     Tipos`;
@@ -39,9 +52,10 @@ in
     <div class="shell lesson-grid">
       <aside class="card lesson-nav">
         <a href="#endpoints"><span class="step-number">1</span>Endpoints</a>
-        <a href="#powerbi"><span class="step-number">2</span>Power BI</a>
-        <a href="#filtros"><span class="step-number">3</span>Filtros</a>
-        <a href="#actualizacion"><span class="step-number">4</span>Actualización</a>
+        <a href="#modelo"><span class="step-number">2</span>Modelo relacional</a>
+        <a href="#powerbi"><span class="step-number">3</span>Power BI</a>
+        <a href="#filtros"><span class="step-number">4</span>Filtros</a>
+        <a href="#actualizacion"><span class="step-number">5</span>Actualización</a>
       </aside>
       <div class="lesson-content">
         <article class="card lesson-card" id="endpoints">
@@ -51,18 +65,33 @@ in
           {endpoints.map(item => <div class="endpoint"><span class="method">GET</span><code>{item.path}</code><button class="copy-btn" data-copy={`${origin}${item.path}`}>Copiar URL</button><small style="grid-column:2/-1;color:var(--muted)">{item.description}</small></div>)}
         </article>
 
+        <article class="card lesson-card" id="modelo">
+          <span class="lesson-time">Modelo estrella · 1 a muchos</span>
+          <h2>Relaciona Productos con Ventas</h2>
+          <p>La API publica dos tablas preparadas para construir un modelo relacional sencillo.</p>
+          <div class="code-block">Productos[producto_id] (1) → (*) Ventas[producto_id]</div>
+          <ul>
+            <li><strong>Productos:</strong> tabla de dimensión. <code>producto_id</code> es único y funciona como clave primaria.</li>
+            <li><strong>Ventas:</strong> tabla de hechos. <code>producto_id</code> se repite y funciona como clave foránea.</li>
+            <li><strong>Dirección de filtro:</strong> única, desde Productos hacia Ventas.</li>
+          </ul>
+        </article>
+
         <article class="card lesson-card" id="powerbi">
           <span class="lesson-time">Conexión recomendada</span>
           <h2>Usar en Power BI</h2>
           <ol>
-            <li>En Power BI, selecciona <strong>Obtener datos</strong> y elige <strong>Web</strong>.</li>
-            <li>Pega <code>{endpoint}</code> y elige acceso anónimo.</li>
-            <li>Selecciona la lista <code>data</code> y conviértela en tabla.</li>
-            <li>Expande las columnas y verifica los tipos antes de cargar.</li>
+            <li>Crea la consulta <strong>Ventas</strong> usando <code>{endpoint}</code>.</li>
+            <li>Crea una segunda consulta <strong>Productos</strong> usando <code>{productEndpoint}</code>.</li>
+            <li>En ambas consultas, selecciona la lista <code>data</code>, conviértela en tabla y expande sus columnas.</li>
+            <li>En la vista Modelo, relaciona <code>Productos[producto_id]</code> con <code>Ventas[producto_id]</code>.</li>
           </ol>
-          <p>También puedes pegar este código en el Editor avanzado de Power Query:</p>
+          <p><strong>Consulta Ventas:</strong></p>
           <pre class="code-block"><code>{powerQuery}</code></pre>
-          <button class="btn btn-primary" data-copy={powerQuery}>Copiar código M</button>
+          <button class="btn btn-primary" data-copy={powerQuery}>Copiar Ventas</button>
+          <p style="margin-top:1.2rem"><strong>Consulta Productos:</strong></p>
+          <pre class="code-block"><code>{powerQueryProducts}</code></pre>
+          <button class="btn btn-primary" data-copy={powerQueryProducts}>Copiar Productos</button>
         </article>
 
         <article class="card lesson-card" id="filtros">

@@ -8,8 +8,12 @@ export const GET: APIRoute = () => json({
   ok: true,
   resource: 'ventas',
   primary_key: 'id',
+  foreign_keys: [
+    { field: 'producto_id', references: 'productos.producto_id', relationship: 'muchos a uno' },
+  ],
   fields: [
     ['id', 'texto', 'Identificador único de la venta'],
+    ['producto_id', 'texto', 'Clave foránea que identifica el producto'],
     ['fecha', 'fecha ISO', 'Fecha de emisión'],
     ['anio', 'entero', 'Año calendario'],
     ['mes', 'texto', 'Nombre del mes'],

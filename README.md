@@ -19,6 +19,7 @@ Portal educativo en Astro para aprender a conectar Power BI con una API de datos
 - `/datos` explorador de la base.
 - `/api` documentación para estudiantes.
 - `/api/v1/ventas.json` registros para Power BI.
+- `/api/v1/productos.json` catálogo de productos para practicar relaciones uno a muchos.
 - `/api/v1/resumen.json` indicadores agregados.
 - `/api/v1/schema.json` diccionario de campos.
 - `/api/v1/health.json` estado del servicio y de la fuente.
@@ -53,6 +54,7 @@ Después del despliegue, verifique:
 ```bash
 curl https://api.cystems.ec/api/v1/health.json
 curl "https://api.cystems.ec/api/v1/ventas.json?limit=5"
+curl https://api.cystems.ec/api/v1/productos.json
 ```
 
 ## Conexión desde Power BI

@@ -1,5 +1,6 @@
 import { parseCsv, asNumber } from './csv';
 import { generateDemoSales } from './demoData';
+import { productIdFromName } from './model';
 import type { DataResult, SaleRecord } from './types';
 
 let cache: DataResult | null = null;
@@ -30,16 +31,18 @@ function normalizeRow(row: Record<string, string>, index: number): SaleRecord | 
   const date = new Date(`${fecha}T00:00:00Z`);
   const margin = asNumber(row.margen) || ventaNeta - costoTotal;
   const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const producto = text(row, 'producto', 'servicio');
 
   return {
     id: text(row, 'id', 'id_venta') || `G${String(index + 1).padStart(4, '0')}`,
+    producto_id: text(row, 'producto_id', 'id_producto') || productIdFromName(producto),
     fecha,
     anio: asNumber(row.anio) || date.getUTCFullYear(),
     mes: text(row, 'mes') || monthNames[date.getUTCMonth()],
     documento: text(row, 'documento', 'factura', 'comprobante'),
     cliente: text(row, 'cliente', 'nombre_cliente'),
     segmento: text(row, 'segmento'),
-    producto: text(row, 'producto', 'servicio'),
+    producto,
     categoria: text(row, 'categoria'),
     region: text(row, 'region', 'ciudad'),
     canal: text(row, 'canal'),

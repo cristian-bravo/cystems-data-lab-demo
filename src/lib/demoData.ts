@@ -1,4 +1,5 @@
 import type { SaleRecord } from './types';
+import { productIdFromName } from './model';
 
 const clients = [
   ['Andes Market', 'Corporativo'],
@@ -55,6 +56,7 @@ export function generateDemoSales(): SaleRecord[] {
 
         rows.push({
           id: `V${String(sequence).padStart(4, '0')}`,
+          producto_id: productIdFromName(product[0]),
           fecha: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
           anio: year,
           mes: monthNames[month - 1],

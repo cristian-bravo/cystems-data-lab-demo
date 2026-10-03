@@ -1,5 +1,6 @@
 export interface SaleRecord {
   id: string;
+  producto_id: string;
   fecha: string;
   anio: number;
   mes: string;
@@ -19,6 +20,14 @@ export interface SaleRecord {
   margen_pct: number;
   estado_cobro: string;
   dias_cobro: number;
+}
+
+export interface ProductRecord {
+  producto_id: string;
+  producto: string;
+  categoria: string;
+  precio_referencia: number;
+  costo_unitario_referencia: number;
 }
 
 export interface DataResult {
