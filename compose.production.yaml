@@ -18,12 +18,20 @@ services:
       - "4321"
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "${CYSTEMS_PROXY_NETWORK:-coolify}"
+      traefik.http.middlewares.cystems-student-gzip.compress: "true"
+      traefik.http.middlewares.cystems-student-https-redirect.redirectscheme.scheme: "https"
+      traefik.http.routers.cystems-student-http.rule: "Host(`api.cystems.ec`)"
+      traefik.http.routers.cystems-student-http.entrypoints: "http"
+      traefik.http.routers.cystems-student-http.middlewares: "cystems-student-https-redirect@docker"
+      traefik.http.routers.cystems-student-http.service: "cystems-student"
       traefik.http.routers.cystems-student.rule: "Host(`api.cystems.ec`)"
       traefik.http.routers.cystems-student.entrypoints: "https"
       traefik.http.routers.cystems-student.tls: "true"
       traefik.http.routers.cystems-student.tls.certresolver: "letsencrypt"
       traefik.http.routers.cystems-student.priority: "950"
-      traefik.http.routers.cystems-student.middlewares: "coolify-cloudflare-only@file,gzip@docker"
+      traefik.http.routers.cystems-student.middlewares: "coolify-cloudflare-only@file,cystems-student-gzip@docker"
+      traefik.http.routers.cystems-student.service: "cystems-student"
       traefik.http.services.cystems-student.loadbalancer.server.port: "4321"
     networks:
       - proxy
@@ -37,4 +45,4 @@ services:
 networks:
   proxy:
     external: true
-    name: ${CYSTEMS_PROXY_NETWORK:-edkudkydmldnkvfswxizh8fw}
+    name: ${CYSTEMS_PROXY_NETWORK:-coolify}
