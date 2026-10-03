@@ -86,8 +86,31 @@ img { max-width: 100%; }
   background: color-mix(in srgb, var(--surface) 91%, transparent);
   box-shadow: 0 16px 42px rgba(15,23,42,.08), inset 0 1px rgba(255,255,255,.8);
 }
-.brand { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; }
-.brand img { width: 156px; height: auto; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  min-height: 46px;
+  padding: .28rem .65rem .28rem .38rem;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  text-decoration: none;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.brand:hover {
+  background: color-mix(in srgb, var(--surface-solid) 78%, transparent);
+  border-color: color-mix(in srgb, var(--violet) 25%, transparent);
+  transform: translateY(-1px);
+}
+.brand img {
+  width: 164px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 7px rgba(76, 29, 149, .16));
+}
+:root[data-theme='dark'] .brand img {
+  filter: drop-shadow(0 0 11px rgba(139, 92, 246, .24));
+}
 .brand span {
   color: var(--teal);
   font-size: .62rem;
