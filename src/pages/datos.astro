@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Base de datos | CYSTEMS Data Lab"
+  description="Explorador de la base de ventas que alimenta la API educativa de CYSTEMS."
+  active="datos"
+>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="crumb"><a href="/">Inicio</a><span>›</span><span>Base de datos</span></div>
+      <p class="eyebrow">Explorador de registros</p>
+      <h1 class="section-title">Conoce la información antes de modelarla.</h1>
+      <p class="section-copy">Busca, filtra y revisa la estructura de los registros que recibirás en Power BI.</p>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="shell">
+      <div class="card filter-bar">
+        <div class="field"><label for="search">Buscar</label><input id="search" type="search" placeholder="Cliente, producto o factura…" /></div>
+        <div class="field"><label for="dataYear">Año</label><select id="dataYear"><option value="">Todos</option><option>2026</option><option>2025</option></select></div>
+        <div class="field"><label for="dataRegion">Ciudad</label><select id="dataRegion"><option value="">Todas</option><option>Quito</option><option>Guayaquil</option><option>Cuenca</option><option>Manta</option></select></div>
+        <div class="field"><label for="dataChannel">Canal</label><select id="dataChannel"><option value="">Todos</option><option>Venta directa</option><option>Referido</option><option>Web</option><option>Alianza</option></select></div>
+      </div>
+      <div class="source-banner"><span><strong id="dataSource">Consultando la API…</strong> · La tabla muestra hasta 25 filas por página.</span><a href="/api" class="pill">Usar en Power BI</a></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Fecha</th><th>Factura</th><th>Cliente</th><th>Producto</th><th>Región</th><th>Canal</th><th>Unidades</th><th>Venta neta</th><th>Costo</th><th>Margen</th><th>Estado</th></tr></thead>
+          <tbody id="dataBody"><tr><td colspan="11" class="empty loading">Cargando registros…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-meta"><span id="rowMeta">—</span><div class="actions"><button class="copy-btn" id="prevPage">← Anterior</button><button class="copy-btn" id="nextPage">Siguiente →</button></div></div>
+    </div>
+  </section>
+
+  <script is:inline>
+    const money=new Intl.NumberFormat('es-EC',{style:'currency',currency:'USD'}); let records=[], page=1; const pageSize=25; const esc=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    const controls=['search','dataYear','dataRegion','dataChannel'].map(id=>document.getElementById(id));
+    function filtered(){ const [search,year,region,channel]=controls.map(el=>el.value.trim().toLowerCase()); return records.filter(r=>(!search||`${r.documento} ${r.cliente} ${r.producto}`.toLowerCase().includes(search))&&(!year||String(r.anio)===year)&&(!region||r.region.toLowerCase()===region)&&(!channel||r.canal.toLowerCase()===channel)); }
+    function render(){ const rows=filtered(), pages=Math.max(1,Math.ceil(rows.length/pageSize)); page=Math.min(page,pages); const visible=rows.slice((page-1)*pageSize,page*pageSize); document.getElementById('dataBody').innerHTML=visible.length?visible.map(r=>`<tr><td>${esc(r.fecha)}</td><td>${esc(r.documento)}</td><td>${esc(r.cliente)}</td><td>${esc(r.producto)}</td><td>${esc(r.region)}</td><td>${esc(r.canal)}</td><td>${Number(r.cantidad)||0}</td><td>${money.format(r.venta_neta)}</td><td>${money.format(r.costo_total)}</td><td>${money.format(r.margen)}</td><td><span class="pill">${esc(r.estado_cobro)}</span></td></tr>`).join(''):'<tr><td colspan="11" class="empty">No hay coincidencias.</td></tr>'; document.getElementById('rowMeta').textContent=`${rows.length} registros · Página ${page} de ${pages}`; document.getElementById('prevPage').disabled=page<=1; document.getElementById('nextPage').disabled=page>=pages; }
+    async function load(){ try { const response=await fetch('/api/v1/ventas.json?limit=5000'); if(!response.ok) throw new Error(); const result=await response.json(); records=result.data; document.getElementById('dataSource').textContent=result.meta.source==='google-sheets'?'Fuente: Google Sheets':'Fuente: conjunto de demostración'; render(); } catch { document.getElementById('dataSource').textContent='API no disponible'; document.getElementById('dataBody').innerHTML='<tr><td colspan="11" class="empty">No fue posible cargar la información.</td></tr>'; } }
+    controls.forEach(el=>el.addEventListener('input',()=>{page=1;render();})); document.getElementById('prevPage').addEventListener('click',()=>{page--;render();}); document.getElementById('nextPage').addEventListener('click',()=>{page++;render();}); load();
+  </script>
+</BaseLayout>

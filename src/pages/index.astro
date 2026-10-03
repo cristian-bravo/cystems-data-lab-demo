@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="CYSTEMS Data Lab | Aprende Power BI con datos reales"
+  description="Laboratorio educativo de CYSTEMS para aprender integración de datos, Power BI y análisis estratégico con una API en vivo."
+>
+  <section class="hero">
+    <div class="shell hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Laboratorio de datos · Power BI</p>
+        <h1 class="display">Convierte datos en <span>decisiones.</span></h1>
+        <p>
+          Un entorno de práctica conectado a una API real: estudia el caso, explora la base
+          de ventas y construye un reporte ejecutivo que se actualiza cuando cambian los datos.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/estudiar">Comenzar la práctica <span aria-hidden="true">→</span></a>
+          <a class="btn btn-secondary" href="/datos">Explorar la base de datos</a>
+        </div>
+      </div>
+
+      <div class="hero-stage" aria-label="Vista previa del laboratorio">
+        <div class="hero-ring"></div>
+        <article class="glass hero-panel">
+          <div class="hero-panel-top">
+            <img class="brand-light" src="/logo-cystems-light.webp" alt="CYSTEMS" />
+            <img class="brand-dark" src="/logo-cystems-dark.webp" alt="CYSTEMS" />
+            <span class="api-badge"><span class="status-orb"></span> API conectada</span>
+          </div>
+          <div class="mini-kpis">
+            <div class="mini-kpi"><small>Ventas netas</small><strong>$1,28 M</strong></div>
+            <div class="mini-kpi"><small>Margen</small><strong>31,4 %</strong></div>
+            <div class="mini-kpi"><small>Clientes</small><strong>12</strong></div>
+            <div class="mini-kpi"><small>Registros</small><strong>360</strong></div>
+          </div>
+          <div class="mini-chart" aria-hidden="true">
+            <i style="height:36%"></i><i style="height:51%"></i><i style="height:45%"></i>
+            <i style="height:66%"></i><i style="height:59%"></i><i style="height:78%"></i>
+            <i style="height:72%"></i><i style="height:88%"></i><i style="height:80%"></i>
+            <i style="height:95%"></i><i style="height:86%"></i><i style="height:100%"></i>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="shell">
+      <p class="eyebrow">Tu espacio de trabajo</p>
+      <h2 class="section-title">Todo lo necesario, en un solo lugar.</h2>
+      <p class="section-copy">La práctica sigue un recorrido claro: comprender, conectar, analizar y comunicar.</p>
+
+      <div class="feature-grid">
+        <article class="card feature-card lift">
+          <div class="feature-icon">01</div>
+          <h3>Ruta de aprendizaje</h3>
+          <p>Revisa el caso empresarial, los objetivos y las medidas que utilizarás durante la sesión.</p>
+          <a href="/estudiar">Abrir contenidos →</a>
+        </article>
+        <article class="card feature-card lift">
+          <div class="feature-icon">02</div>
+          <h3>Datos en vivo</h3>
+          <p>Filtra los registros que alimentan la API y comprueba cómo responde una fuente actualizable.</p>
+          <a href="/datos">Ver base de datos →</a>
+        </article>
+        <article class="card feature-card lift">
+          <div class="feature-icon">03</div>
+          <h3>Dashboard ejecutivo</h3>
+          <p>Observa una referencia profesional y úsala para diseñar tu propia solución en Power BI.</p>
+          <a href="/dashboard">Ver dashboard →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <p class="eyebrow">Metodología</p>
+      <h2 class="section-title">De una fila de datos a un insight.</h2>
+      <div class="step-grid">
+        <article class="card step"><span class="step-number">1</span><h3>Comprende</h3><p>Identifica el objetivo gerencial y las preguntas del caso.</p></article>
+        <article class="card step"><span class="step-number">2</span><h3>Conecta</h3><p>Consume el endpoint de ventas desde Power BI en el navegador.</p></article>
+        <article class="card step"><span class="step-number">3</span><h3>Modela</h3><p>Configura tipos de datos y crea indicadores con DAX.</p></article>
+        <article class="card step"><span class="step-number">4</span><h3>Comunica</h3><p>Presenta conclusiones claras para la toma de decisiones.</p></article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

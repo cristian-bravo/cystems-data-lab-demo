@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const origin = Astro.url.origin;
+const endpoints = [
+  { path: '/api/v1/ventas.json', description: 'Detalle transaccional de ventas. Acepta anio, region, canal, cliente y limit.' },
+  { path: '/api/v1/resumen.json', description: 'Indicadores, tendencia mensual y rankings ya calculados.' },
+  { path: '/api/v1/schema.json', description: 'Diccionario de campos y tipos de datos.' },
+  { path: '/api/v1/health.json', description: 'Estado del servicio y de su fuente de datos.' },
+];
+const endpoint = `${origin}/api/v1/ventas.json`;
+const powerQuery = `let
+    Origen = Json.Document(Web.Contents("${endpoint}")),
+    Registros = Origen[data],
+    Tabla = Table.FromRecords(Registros),
+    Tipos = Table.TransformColumnTypes(Tabla,{
+        {"fecha", type date}, {"anio", Int64.Type},
+        {"unidades", Int64.Type}, {"venta_neta", Currency.Type},
+        {"costo_total", Currency.Type}, {"margen", Currency.Type}
+    })
+in
+    Tipos`;
+---
+
+<BaseLayout
+  title="Documentación API | CYSTEMS Data Lab"
+  description="Documentación y ejemplos para conectar Power BI con la API educativa de CYSTEMS."
+  active="api"
+>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="crumb"><a href="/">Inicio</a><span>›</span><span>API</span></div>
+      <p class="eyebrow">CYSTEMS Data API · v1</p>
+      <h1 class="section-title">Conecta Power BI en minutos.</h1>
+      <p class="section-copy">Utiliza los endpoints públicos para consumir datos JSON, aplicar filtros y construir un modelo actualizable.</p>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="shell lesson-grid">
+      <aside class="card lesson-nav">
+        <a href="#endpoints"><span class="step-number">1</span>Endpoints</a>
+        <a href="#powerbi"><span class="step-number">2</span>Power BI</a>
+        <a href="#filtros"><span class="step-number">3</span>Filtros</a>
+        <a href="#actualizacion"><span class="step-number">4</span>Actualización</a>
+      </aside>
+      <div class="lesson-content">
+        <article class="card lesson-card" id="endpoints">
+          <span class="lesson-time">API REST · JSON</span>
+          <h2>Endpoints disponibles</h2>
+          <p>Todos responden en formato JSON y permiten solicitudes desde Power BI, Excel o cualquier navegador moderno.</p>
+          {endpoints.map(item => <div class="endpoint"><span class="method">GET</span><code>{item.path}</code><button class="copy-btn" data-copy={`${origin}${item.path}`}>Copiar URL</button><small style="grid-column:2/-1;color:var(--muted)">{item.description}</small></div>)}
+        </article>
+
+        <article class="card lesson-card" id="powerbi">
+          <span class="lesson-time">Conexión recomendada</span>
+          <h2>Usar en Power BI</h2>
+          <ol>
+            <li>En Power BI, selecciona <strong>Obtener datos</strong> y elige <strong>Web</strong>.</li>
+            <li>Pega <code>{endpoint}</code> y elige acceso anónimo.</li>
+            <li>Selecciona la lista <code>data</code> y conviértela en tabla.</li>
+            <li>Expande las columnas y verifica los tipos antes de cargar.</li>
+          </ol>
+          <p>También puedes pegar este código en el Editor avanzado de Power Query:</p>
+          <pre class="code-block"><code>{powerQuery}</code></pre>
+          <button class="btn btn-primary" data-copy={powerQuery}>Copiar código M</button>
+        </article>
+
+        <article class="card lesson-card" id="filtros">
+          <span class="lesson-time">Parámetros opcionales</span>
+          <h2>Solicitar solo los datos necesarios</h2>
+          <p>Combina filtros con <code>?</code> y <code>&amp;</code>. Los valores con espacios deben codificarse en la URL.</p>
+          <div class="code-block">{origin}/api/v1/ventas.json?anio=2026&amp;region=Sierra&amp;limit=100</div>
+          <ul><li><code>anio</code>: 2025 o 2026</li><li><code>region</code>: Quito, Guayaquil, Cuenca o Manta</li><li><code>canal</code>: Venta directa, Referido, Web o Alianza</li><li><code>cliente</code>: texto completo o parcial</li><li><code>limit</code>: máximo de filas devueltas</li></ul>
+        </article>
+
+        <article class="card lesson-card" id="actualizacion">
+          <span class="lesson-time">Datos en vivo</span>
+          <h2>Comprobar una actualización</h2>
+          <p>Cuando el docente modifica la hoja fuente, la API invalida su caché en pocos segundos. En Power BI, usa <strong>Actualizar</strong> para solicitar nuevamente los registros y verificar el cambio.</p>
+          <div class="source-banner"><span><strong>Consejo:</strong> registra el valor anterior de ventas, actualiza y documenta qué indicador cambió.</span><span class="pill">Prueba controlada</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{ const text=button.getAttribute('data-copy'); await navigator.clipboard.writeText(text); const old=button.textContent; button.textContent='Copiado ✓'; setTimeout(()=>button.textContent=old,1500); }));
+  </script>
+</BaseLayout>

@@ -1,0 +1,40 @@
+name: cystems-yuki-student
+
+services:
+  web:
+    build:
+      context: .
+    image: cystems/yuki-student:latest
+    container_name: cystems-yuki-student
+    restart: unless-stopped
+    init: true
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4321
+      PUBLIC_SITE_URL: https://api.cystems.ec
+      GOOGLE_SHEET_CSV_URL: ${GOOGLE_SHEET_CSV_URL:-}
+      DATA_CACHE_SECONDS: ${DATA_CACHE_SECONDS:-15}
+    expose:
+      - "4321"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.cystems-student.rule: "Host(`api.cystems.ec`)"
+      traefik.http.routers.cystems-student.entrypoints: "https"
+      traefik.http.routers.cystems-student.tls: "true"
+      traefik.http.routers.cystems-student.tls.certresolver: "letsencrypt"
+      traefik.http.routers.cystems-student.priority: "950"
+      traefik.http.routers.cystems-student.middlewares: "coolify-cloudflare-only@file,gzip@docker"
+      traefik.http.services.cystems-student.loadbalancer.server.port: "4321"
+    networks:
+      - proxy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4321/api/v1/health.json"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+networks:
+  proxy:
+    external: true
+    name: ${CYSTEMS_PROXY_NETWORK:-edkudkydmldnkvfswxizh8fw}

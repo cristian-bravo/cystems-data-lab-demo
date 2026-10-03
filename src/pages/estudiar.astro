@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Ruta de estudio | CYSTEMS Data Lab"
+  description="Guía de estudio del proyecto integrador de reporting contable con Power BI y una API de datos."
+  active="estudiar"
+>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="crumb"><a href="/">Inicio</a><span>›</span><span>Ruta de estudio</span></div>
+      <p class="eyebrow">Unidad 4 · Aplicaciones avanzadas</p>
+      <h1 class="section-title">4.3 Proyecto integrador</h1>
+      <p class="section-copy">Una ruta breve para construir un sistema de reporting contable, analizar un caso real y presentar conclusiones estratégicas.</p>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="shell lesson-grid">
+      <aside class="card lesson-nav">
+        <a href="#objetivo"><span class="step-number">0</span>Objetivo de la práctica</a>
+        <a href="#sistema"><span class="step-number">1</span>4.3.1 Sistema de reporting</a>
+        <a href="#caso"><span class="step-number">2</span>4.3.2 Caso real</a>
+        <a href="#insights"><span class="step-number">3</span>4.3.3 Insights estratégicos</a>
+        <a href="#entregable"><span class="step-number">4</span>Resultado esperado</a>
+      </aside>
+
+      <div class="lesson-content">
+        <article class="card lesson-card" id="objetivo">
+          <span class="lesson-time">5 minutos</span>
+          <h2>Objetivo de la práctica</h2>
+          <p>Conectar Power BI con la API de ventas de CYSTEMS, preparar la información y construir una página ejecutiva que responda tres preguntas:</p>
+          <ul>
+            <li>¿Cuánto vendimos y qué margen generamos?</li>
+            <li>¿Qué productos, clientes y regiones explican el resultado?</li>
+            <li>¿Qué decisión recomendaríamos a la gerencia?</li>
+          </ul>
+        </article>
+
+        <article class="card lesson-card" id="sistema">
+          <span class="lesson-time">20 minutos</span>
+          <h2>4.3.1 Desarrollo de un sistema completo de reporting contable</h2>
+          <p>El sistema tiene tres capas: una hoja editable como fuente, una API que publica datos estructurados y un dashboard que los transforma en información gerencial.</p>
+          <div class="code-block">Google Sheets → api.cystems.ec/api/v1/ventas.json → Power BI</div>
+          <ul>
+            <li>Conecta el endpoint con <strong>Obtener datos → Web</strong>.</li>
+            <li>Expande la lista <code>data</code> y configura fechas, enteros y decimales.</li>
+            <li>Crea medidas para ventas, costos, margen y rentabilidad.</li>
+          </ul>
+          <a class="btn btn-secondary" href="/api">Ver documentación de la API</a>
+        </article>
+
+        <article class="card lesson-card" id="caso">
+          <span class="lesson-time">25 minutos</span>
+          <h2>4.3.2 Análisis de caso real con datos proporcionados</h2>
+          <p>CYSTEMS necesita revisar el desempeño comercial de 2025 y 2026. La base contiene transacciones por fecha, cliente, producto, región y canal, junto con ventas, costos y margen.</p>
+          <ul>
+            <li>Compara ventas y margen entre años.</li>
+            <li>Ordena productos y clientes por contribución.</li>
+            <li>Usa segmentadores de año, región y canal.</li>
+            <li>Valida que los totales coincidan con el resumen de la API.</li>
+          </ul>
+          <a class="btn btn-secondary" href="/datos">Explorar registros</a>
+        </article>
+
+        <article class="card lesson-card" id="insights">
+          <span class="lesson-time">25 minutos</span>
+          <h2>4.3.3 Presentación de insights estratégicos derivados de los datos</h2>
+          <p>Un buen reporte no termina en el gráfico. Formula conclusiones con evidencia, impacto y acción recomendada.</p>
+          <ul>
+            <li><strong>Evidencia:</strong> menciona un valor, una variación o una participación.</li>
+            <li><strong>Lectura:</strong> explica qué está ocurriendo y dónde.</li>
+            <li><strong>Acción:</strong> propone una decisión concreta para la gerencia.</li>
+          </ul>
+          <p>Ejemplo: “El producto con mayor venta no es el de mayor margen; conviene priorizar campañas por rentabilidad y no solo por volumen”.</p>
+        </article>
+
+        <article class="card lesson-card" id="entregable">
+          <span class="lesson-time">15 minutos</span>
+          <h2>Resultado esperado</h2>
+          <p>Una página de Power BI con cuatro indicadores, una tendencia mensual, un ranking, un análisis por región y al menos dos segmentadores. Cierra con tres insights ejecutivos.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="/dashboard">Abrir dashboard de referencia</a>
+            <a class="btn btn-secondary" href="/api">Copiar endpoint</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
