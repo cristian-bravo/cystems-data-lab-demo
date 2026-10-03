@@ -49,9 +49,26 @@ function normalizeHeader(value: string) {
 
 export function asNumber(value: unknown) {
   if (typeof value === 'number') return value;
-  const raw = String(value ?? '').trim().replace(/[$%\s]/g, '');
+  const source = String(value ?? '').trim();
+  const isPercent = source.includes('%');
+  const raw = source.replace(/[$%\s]/g, '');
   if (!raw) return 0;
-  const decimal = raw.includes(',') && !raw.includes('.') ? raw.replace(',', '.') : raw.replace(/,/g, '');
-  const number = Number(decimal);
-  return Number.isFinite(number) ? number : 0;
+
+  const lastComma = raw.lastIndexOf(',');
+  const lastDot = raw.lastIndexOf('.');
+  let normalized = raw;
+
+  if (lastComma > -1 && lastDot > -1) {
+    normalized = lastComma > lastDot
+      ? raw.replace(/\./g, '').replace(',', '.')
+      : raw.replace(/,/g, '');
+  } else if (lastComma > -1) {
+    normalized = raw.replace(/\./g, '').replace(',', '.');
+  } else {
+    normalized = raw.replace(/,/g, '');
+  }
+
+  const number = Number(normalized);
+  if (!Number.isFinite(number)) return 0;
+  return isPercent ? number / 100 : number;
 }
